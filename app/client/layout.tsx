@@ -1,14 +1,7 @@
 import type { Metadata } from "next";
-import "./globals.css";
-import { Poppins } from "next/font/google";
+import "../globals.css";
 import { Toaster } from "sonner";
-import { ThemeProvider } from "@/components/theme-provider";
-
-const interFont = Poppins({
-	subsets: ["latin"],
-	variable: "--font-sans",
-	weight: "500",
-});
+import { Navbar } from "@/components/navbar";
 
 export const metadata: Metadata = {
 	title: "Work Breakdown Structure",
@@ -30,16 +23,10 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={`${interFont.className} antialiased`}>
+			<body>
 				<Toaster richColors />
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange
-				>
-					{children}	
-				</ThemeProvider>
+				<Navbar />
+				{children}
 			</body>
 		</html>
 	);
