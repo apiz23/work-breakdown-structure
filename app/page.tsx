@@ -7,8 +7,8 @@ import Image from "next/image";
 import kwspLogo from "/public/img/kwsp-logo.png";
 import { useState, FormEvent } from "react";
 import { toast } from "sonner";
-import { validateLogin } from "./api/auth/route";
 import { useRouter } from "next/navigation";
+import { validateLogin } from "./api/wbsService";
 
 export default function Home() {
 	const [username, setUsername] = useState<string>("");

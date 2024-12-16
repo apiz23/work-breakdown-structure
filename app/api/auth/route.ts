@@ -1,62 +1,34 @@
-// api/wbsService.ts
-import supabase from "@/lib/supabase";
+import { NextResponse } from "next/server";
+import { fetchWBSData, validateLogin } from "../wbsService";
 
-export interface WBSUser {
-	id: number;
-	username: string;
-	password: string;
-	role: string;
+export async function GET() {
+	try {
+		const data = await fetchWBSData();
+		return NextResponse.json(data); // return the data as JSON response
+	} catch (err) {
+		console.error("Error during GET request:", err); // Log the error
+		return NextResponse.json(
+			{ message: "An error occurred while fetching data." },
+			{ status: 500 }
+		);
+	}
 }
 
-/**
- * Fetches all users from the "wbs_users" table.
- */
-export const fetchWBSData = async (): Promise<WBSUser[]> => {
+export async function POST(request: Request) {
+	const { username, password } = await request.json(); // extract data from the request
+
 	try {
-		const { data: wbs, error } = await supabase.from("wbs_users").select("*");
-		if (error) throw new Error(error.message);
-		return wbs as WBSUser[];
-	} catch (error) {
-		if (error instanceof Error) {
-			console.error("Error fetching WBS data:", error.message);
-			throw error;
-		}
-		console.error("Unexpected error fetching WBS data:", error);
-		throw new Error("Unexpected error occurred.");
-	}
-};
-
-/**
- * Validates the username and password against the "wbs_users" data.
- */
-export const validateLogin = async (
-	username: string,
-	password: string
-): Promise<{
-	valid: boolean;
-	userName?: string;
-	role?: string;
-	message?: string;
-}> => {
-	try {
-		const wbsData = await fetchWBSData();
-		const validUser = wbsData.find(
-			(user) => user.username === username && user.password === password
-		);
-
-		if (validUser) {
-			sessionStorage.setItem("login", "authorized");
-			sessionStorage.setItem("userName", validUser.username);
-
-			return { valid: true, userName: validUser.username, role: validUser.role };
+		const loginResponse = await validateLogin(username, password);
+		if (loginResponse.valid) {
+			return NextResponse.json(loginResponse); // return login success response
 		} else {
-			return { valid: false, message: "Invalid username or password." };
+			return NextResponse.json(loginResponse, { status: 400 }); // return error response
 		}
-	} catch (error) {
-		if (error instanceof Error) {
-			return { valid: false, message: error.message };
-		}
-		console.error("Unexpected error during login validation:", error);
-		return { valid: false, message: "An unexpected error occurred." };
+	} catch (err) {
+		console.error("Error during POST request:", err); // Log the error
+		return NextResponse.json(
+			{ message: "An error occurred during login." },
+			{ status: 500 }
+		);
 	}
-};
+}
