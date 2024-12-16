@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "../globals.css";
 import { Toaster } from "sonner";
-import { Navbar } from "@/components/navbar";
 
 export const metadata: Metadata = {
 	title: "Work Breakdown Structure",
@@ -25,7 +24,6 @@ export default function RootLayout({
 		<html lang="en">
 			<body>
 				<Toaster richColors />
-				<Navbar />
 				{children}
 			</body>
 		</html>
