@@ -16,8 +16,8 @@ export function Navbar() {
 		<div className="fixed bottom-10 left-0 w-full">
 			<Dock direction="middle" className="bg-black text-white">
 				{navItems.map((item, index) => (
-					<DockIcon>
-						<Link key={index} href={item.href} aria-label={item.label}>
+					<DockIcon key={index}>
+						<Link href={item.href} aria-label={item.label}>
 							<item.icon className="size-6" />
 						</Link>
 					</DockIcon>

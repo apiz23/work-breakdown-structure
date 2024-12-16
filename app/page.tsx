@@ -36,10 +36,11 @@ export default function Home() {
 				loading: "Logging in...",
 				success: (response: { userName?: string }) =>
 					`Welcome, ${response.userName || "User"}!`,
-				error: (error: any) => error.message || "An error occurred during login.",
+				error: (error: Error) => error.message || "An error occurred during login.", 
 			}
 		);
 	};
+
 	return (
 		<div className="min-h-screen flex">
 			<div className="hidden md:flex flex-col justify-center items-center bg-neutral-950 text-white w-1/2 px-16">

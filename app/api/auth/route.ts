@@ -17,8 +17,12 @@ export const fetchWBSData = async (): Promise<WBSUser[]> => {
 		if (error) throw new Error(error.message);
 		return wbs as WBSUser[];
 	} catch (error) {
-		console.error("Error fetching WBS data:", error);
-		throw error;
+		if (error instanceof Error) {
+			console.error("Error fetching WBS data:", error.message);
+			throw error;
+		}
+		console.error("Unexpected error fetching WBS data:", error);
+		throw new Error("Unexpected error occurred.");
 	}
 };
 
@@ -48,7 +52,11 @@ export const validateLogin = async (
 		} else {
 			return { valid: false, message: "Invalid username or password." };
 		}
-	} catch (error: any) {
-		return { valid: false, message: error.message };
+	} catch (error) {
+		if (error instanceof Error) {
+			return { valid: false, message: error.message };
+		}
+		console.error("Unexpected error during login validation:", error);
+		return { valid: false, message: "An unexpected error occurred." };
 	}
 };

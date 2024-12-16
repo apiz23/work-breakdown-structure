@@ -12,7 +12,7 @@ export async function GET() {
 		}
 
 		return NextResponse.json(wbs_project, { status: 200 });
-	} catch (err) {
+	} catch {
 		return NextResponse.json(
 			{ error: "An unexpected error occurred" },
 			{ status: 500 }
