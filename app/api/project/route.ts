@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
 	try {
 		const { data: wbs_project, error } = await supabase
-			.from("wbs_project")
+			.from("wbs_projects")
 			.select("*");
 
 		if (error) {

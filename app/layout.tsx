@@ -16,8 +16,8 @@ export const metadata: Metadata = {
 	icons: {
 		icon: [
 			{
-				url: "/public/favicon.ico",
-				href: "/public/favicon.ico",
+				url: "./public/img/kwsp-logo.png",
+				href: "./public/img/kwsp-logo.png",
 			},
 		],
 	},
@@ -38,7 +38,7 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					{children}	
+					{children}
 				</ThemeProvider>
 			</body>
 		</html>

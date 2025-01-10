@@ -1,19 +1,8 @@
-import type { Metadata } from "next";
 import "../globals.css";
 import { Toaster } from "sonner";
-
-export const metadata: Metadata = {
-	title: "Work Breakdown Structure",
-	description: "Work Breakdown Structure by KWSP",
-	icons: {
-		icon: [
-			{
-				url: "/public/favicon.ico",
-				href: "/public/favicon.ico",
-			},
-		],
-	},
-};
+import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AuthProvider } from "@/lib/authProvider";
 
 export default function RootLayout({
 	children,
@@ -23,8 +12,16 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body>
-				<Toaster richColors />
-				{children}
+				<SidebarProvider>
+					<Toaster richColors />
+					<AppSidebar />
+					<main>
+						<SidebarTrigger className="w-10 h-10 mx-2 hover:bg-transparent" />
+						<AuthProvider>
+							<div className="p-6">{children}</div>
+						</AuthProvider>
+					</main>
+				</SidebarProvider>
 			</body>
 		</html>
 	);

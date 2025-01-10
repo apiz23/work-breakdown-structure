@@ -1,5 +1,5 @@
+import { fetchWBSData, validateLogin } from "@/app/service/wbsService";
 import { NextResponse } from "next/server";
-import { fetchWBSData, validateLogin } from "../wbsService";
 
 export async function GET() {
 	try {

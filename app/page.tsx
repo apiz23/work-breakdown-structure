@@ -8,7 +8,7 @@ import kwspLogo from "/public/img/kwsp-logo.png";
 import { useState, FormEvent } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { validateLogin } from "./api/wbsService";
+import { validateLogin } from "./service/wbsService";
 
 export default function Home() {
 	const [username, setUsername] = useState<string>("");
@@ -36,7 +36,7 @@ export default function Home() {
 				loading: "Logging in...",
 				success: (response: { userName?: string }) =>
 					`Welcome, ${response.userName || "User"}!`,
-				error: (error: Error) => error.message || "An error occurred during login.", 
+				error: (error: Error) => error.message || "An error occurred during login.",
 			}
 		);
 	};
