@@ -20,8 +20,8 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Project } from "@/lib/interface";
-import { addProject } from "@/app/api/project/route";
 import { Label } from "@/components/ui/label";
+import { addProject } from "@/services/project";
 
 export default function Page() {
 	const [search, setSearch] = useState<string>("");

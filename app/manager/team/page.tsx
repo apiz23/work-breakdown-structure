@@ -20,7 +20,6 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { fetchUsers } from "@/app/api/user/route";
-import { fetchProject } from "@/app/api/project/route";
 import {
 	Table,
 	TableBody,
@@ -33,6 +32,7 @@ import {
 import { Trash } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import supabase from "@/lib/supabase";
+import { fetchProject } from "@/services/project";
 
 export default function Page() {
 	const [search, setSearch] = useState<string>("");
