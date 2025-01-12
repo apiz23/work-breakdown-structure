@@ -42,7 +42,7 @@ export default function Page() {
 				const data = await response.json();
 				setProjects(data);
 				setFilteredProjects(data);
-			} catch (error) {
+			} catch {
 				toast.error("Failed to fetch projects.");
 			}
 		};

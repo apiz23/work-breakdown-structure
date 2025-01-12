@@ -20,9 +20,8 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Task } from "@/lib/interface";
+import { Task, User } from "@/lib/interface";
 import { Button } from "@/components/ui/button";
 import supabase from "@/lib/supabase";
 import { Label } from "@/components/ui/label";
@@ -38,11 +37,11 @@ const fetchUsers = async () => {
 		}
 
 		const filteredUsers = data.users.filter(
-			(user: any) => user.role !== "admin" && user.role !== "manager"
+			(user: User) => user.role !== "admin" && user.role !== "manager"
 		);
 
 		return filteredUsers;
-	} catch (error) {
+	} catch {
 		return [];
 	}
 };
@@ -55,7 +54,7 @@ export default function ProjectDetails({
 	const [tasks, setTasks] = useState<Task[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
-	const [users, setUsers] = useState<any[]>([]);
+	const [users, setUsers] = useState<User[]>([]);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
 	const [inputValue, setInputValue] = useState<number>(0);
@@ -75,9 +74,9 @@ export default function ProjectDetails({
 
 				setTasks(data.tasks);
 				setError(null);
-			} catch (err: any) {
-				setError(err.message || "An error occurred while fetching tasks.");
-				toast.error(err.message || "An error occurred.");
+			} catch {
+				setError("An error occurred while fetching tasks.");
+				toast.error("An error occurred.");
 			} finally {
 				setLoading(false);
 			}
@@ -102,10 +101,6 @@ export default function ProjectDetails({
 		);
 	}
 
-	const filteredUsers = users.filter((user) =>
-		user.name.toLowerCase().includes(searchQuery.toLowerCase())
-	);
-
 	const handleUserSelection = (userId: number, checked: boolean) => {
 		setSelectedUsers((prevSelectedUsers) =>
 			checked
@@ -118,7 +113,7 @@ export default function ProjectDetails({
 		e.preventDefault();
 
 		try {
-			const { data, error } = await supabase
+			const { error } = await supabase
 				.from("wbs_tasks")
 				.update({ estimatedCompletion: inputValue })
 				.eq("taskId", taskId)
@@ -129,8 +124,8 @@ export default function ProjectDetails({
 			}
 
 			toast.success("Task updated successfully!");
-		} catch (err: any) {
-			toast.error(err.message || "An error occurred while updating the task.");
+		} catch {
+			toast.error("An error occurred while updating the task.");
 		}
 	};
 
@@ -265,9 +260,9 @@ export default function ProjectDetails({
 																					<Switch
 																						id={`user-${user.id}`}
 																						className="mr-2"
-																						checked={selectedUsers.includes(user.id)}
+																						checked={selectedUsers.includes(Number(user.id))}
 																						onCheckedChange={(checked) =>
-																							handleUserSelection(user.id, !!checked)
+																							handleUserSelection(Number(user.id), !!checked)
 																						}
 																					/>
 																				</div>

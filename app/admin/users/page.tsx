@@ -40,7 +40,7 @@ export default function Page() {
 				} else {
 					throw new Error("Unexpected data format");
 				}
-			} catch (error) {
+			} catch {
 				toast.error("Error fetching users. Please try again.");
 			}
 		};

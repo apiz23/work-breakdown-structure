@@ -30,8 +30,8 @@ export const fetchProject = async () => {
 		}
 
 		return data;
-	} catch (error: any) {
-		toast.error(`Error fetching users: ${error.message || "Please try again."}`);
+	} catch {
+		toast.error(`Error fetching users: Please try again.`);
 		return null;
 	}
 };
@@ -49,8 +49,8 @@ export const fetchProjectById = async (id: string) => {
 		}
 
 		return data;
-	} catch (error: any) {
-		toast.error(`Error fetching user: ${error.message || "Please try again."}`);
+	} catch {
+		toast.error(`Error fetching user: Please try again.`);
 		return null;
 	}
 };
@@ -77,10 +77,8 @@ export const addProject = async (projectData: {
 
 		toast.success("Project added successfully!");
 		return data;
-	} catch (error: any) {
-		toast.error(
-			`Error adding project: ${error.message || "Please try again later."}`
-		);
+	} catch {
+		toast.error(`Error adding project: Please try again later.`);
 		return null;
 	}
 };

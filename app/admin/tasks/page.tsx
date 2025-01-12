@@ -11,7 +11,6 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { Task } from "@/lib/interface";
 import {
 	Dialog,
@@ -84,8 +83,8 @@ export default function Page() {
 				{filteredTasks.length > 0 ? (
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 						{filteredTasks.map((task) => (
-							<Dialog>
-								<Card key={task.id}>
+							<Dialog key={task.id}>
+								<Card>
 									<CardHeader>
 										<CardTitle className="font-semibold">{task.name}</CardTitle>
 										<CardDescription className="font-medium justify-end flex">

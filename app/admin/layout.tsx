@@ -1,7 +1,6 @@
 import "../globals.css";
 import { Toaster } from "sonner";
 import React from "react";
-import Navbar from "@/components/navbar";
 
 export default function UserLayout({
 	children,

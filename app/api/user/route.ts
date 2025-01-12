@@ -1,4 +1,3 @@
-import { User } from "@/lib/interface";
 import supabase from "@/lib/supabase";
 import { NextResponse } from "next/server";
 import { toast } from "sonner";
@@ -12,7 +11,7 @@ export async function GET() {
 		}
 
 		return NextResponse.json({ users: data }, { status: 200 });
-	} catch (error) {
+	} catch {
 		return NextResponse.json({ error: "No users found" }, { status: 404 });
 	}
 }
@@ -25,8 +24,8 @@ export const fetchUsers = async () => {
 			throw new Error(error.message);
 		}
 		return data;
-	} catch (error: any) {
-		toast.error(`Error fetching users: ${error.message || "Please try again."}`);
+	} catch {
+		toast.error(`Error fetching users: Please try again.`);
 		return null;
 	}
 };
@@ -44,8 +43,8 @@ export const fetchUserById = async (id: string) => {
 		}
 
 		return data;
-	} catch (error: any) {
-		toast.error(`Error fetching user: ${error.message || "Please try again."}`);
+	} catch  {
+		toast.error(`Error fetching user: Please try again.`);
 		return null;
 	}
 };
@@ -100,7 +99,7 @@ export const fetchTasksForUser = async (userId: string) => {
 				})
 			) || []
 		);
-	} catch (error) {
+	} catch {
 		toast.error("Error fetching tasks.");
 		return [];
 	}

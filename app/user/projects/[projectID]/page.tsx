@@ -49,9 +49,9 @@ export default function ProjectDetails({
 
 				setTasks(data.tasks);
 				setError(null);
-			} catch (err: any) {
-				setError(err.message || "An error occurred while fetching tasks.");
-				toast.error(err.message || "An error occurred.");
+			} catch {
+				setError("An error occurred while fetching tasks.");
+				toast.error("An error occurred.");
 			} finally {
 				setLoading(false);
 			}
@@ -64,7 +64,7 @@ export default function ProjectDetails({
 		e.preventDefault();
 
 		try {
-			const { data, error } = await supabase
+			const { error } = await supabase
 				.from("wbs_tasks")
 				.update({ estimatedCompletion: inputValue })
 				.eq("taskId", taskId)
@@ -75,8 +75,8 @@ export default function ProjectDetails({
 			}
 
 			toast.success("Task updated successfully!");
-		} catch (err: any) {
-			toast.error(err.message || "An error occurred while updating the task.");
+		} catch {
+			toast.error("An error occurred while updating the task.");
 		}
 	};
 
@@ -104,7 +104,7 @@ export default function ProjectDetails({
 
 				{tasks.length > 0 ? (
 					<div>
-						{tasks.map((task, index) => (
+						{tasks.map((task) => (
 							<>
 								<Dialog>
 									<div className="grid md:grid-cols-3 grid-cols-1 gap-4">
@@ -156,7 +156,7 @@ export default function ProjectDetails({
 										</div>
 										<div className="text-white">
 											<h2 className="text-lg font-bold">Update Task</h2>
-											<form onSubmit={(e) => handleSubmit(e, task.id)}>
+											<form onSubmit={(e) => handleSubmit(e, Number(task.id))}>
 												<div className="flex space-x-4">
 													<label className="font-medium">Enter the hours:</label>
 													<input
