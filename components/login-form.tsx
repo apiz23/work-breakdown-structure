@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState, FormEvent } from "react";
-import { validateLogin } from "@/service/wbsService";
+import { validateLogin } from "@/services/wbsService";
 
 export default function LoginForm() {
 	const [username, setUsername] = useState<string>("");

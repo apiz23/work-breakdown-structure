@@ -19,7 +19,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { fetchUsers } from "@/app/api/user/route";
 import {
 	Table,
 	TableBody,
@@ -29,10 +28,10 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { Trash } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import supabase from "@/lib/supabase";
 import { fetchProject } from "@/services/project";
+import { fetchUsers } from "@/services/user";
 
 export default function Page() {
 	const [search, setSearch] = useState<string>("");
@@ -48,7 +47,9 @@ export default function Page() {
 			try {
 				const usersData = await fetchUsers();
 				if (usersData) {
-					const filteredUsers = usersData.filter((user) => user.role !== "admin");
+					const filteredUsers = usersData.filter(
+						(user: User) => user.role !== "admin"
+					);
 					setUsers(filteredUsers);
 				}
 			} catch (err: any) {
@@ -97,7 +98,9 @@ export default function Page() {
 		try {
 			const usersData = await fetchUsers();
 			if (usersData) {
-				const filteredUsers = usersData.filter((user) => user.role !== "admin");
+				const filteredUsers = usersData.filter(
+					(user: User) => user.role !== "admin"
+				);
 				setAssignedUsers(filteredUsers);
 			}
 		} catch (err: any) {
