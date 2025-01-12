@@ -3,7 +3,7 @@ import { Toaster } from "sonner";
 import React from "react";
 import Navbar from "@/components/navbar";
 
-export default function UserLayout({
+export default function ManagerLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;

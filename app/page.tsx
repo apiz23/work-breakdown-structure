@@ -1,46 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import kwspLogo from "/public/img/kwsp-logo.png";
-import { useState, FormEvent } from "react";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { validateLogin } from "./service/wbsService";
+import LoginForm from "@/components/login-form";
 
-export default function Home() {
-	const [username, setUsername] = useState<string>("");
-	const [password, setPassword] = useState<string>("");
-	const router = useRouter();
-
-	const handleSignIn = async (e: FormEvent): Promise<void> => {
-		e.preventDefault();
-
-		toast.promise(
-			(async () => {
-				const result = await validateLogin(username, password);
-				if (result.valid) {
-					if (result.role === "admin") {
-						router.push("/admin");
-					} else {
-						router.push("/client");
-					}
-					return { status: "success", userName: result.userName };
-				} else {
-					throw new Error(result.message);
-				}
-			})(),
-			{
-				loading: "Logging in...",
-				success: (response: { userName?: string }) =>
-					`Welcome, ${response.userName || "User"}!`,
-				error: (error: Error) => error.message || "An error occurred during login.",
-			}
-		);
-	};
-
+export default function Page() {
 	return (
 		<div className="min-h-screen flex">
 			<div className="hidden md:flex flex-col justify-center items-center bg-neutral-950 text-white w-1/2 px-16">
@@ -72,27 +37,7 @@ export default function Home() {
 						<p className="text-gray-400">Enter the credentials to login</p>
 					</CardHeader>
 					<CardContent className="text-white">
-						<form onSubmit={handleSignIn} className="flex flex-col">
-							<Input
-								type="text"
-								placeholder="Username"
-								className="mb-4 focus:border-white border-neutral-700"
-								value={username}
-								onChange={(e) => setUsername(e.target.value)}
-								required
-							/>
-							<Input
-								type="password"
-								placeholder="Password"
-								className="mb-4 focus:border-white border-neutral-700"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								required
-							/>
-							<Button type="submit" variant="outline" className="w-full text-black">
-								Login
-							</Button>
-						</form>
+						<LoginForm />
 					</CardContent>
 				</Card>
 			</div>

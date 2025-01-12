@@ -12,7 +12,7 @@ export default function Page() {
 							Work Breakdown Structure
 						</h1>
 						<h2 className="bg-gradient-to-r from-purple-300 via-blue-500 to-green-600 bg-clip-text text-xl font-extrabold text-transparent sm:text-3xl">
-							Admin
+							Manager
 						</h2>
 
 						<p className="mx-auto mt-4 max-w-xl sm:text-lg/relaxed">
@@ -21,14 +21,11 @@ export default function Page() {
 						</p>
 
 						<div className="mt-8 flex flex-wrap justify-center gap-4">
-							<Link href="/admin/projects">
+							<Link href="/manager/projects">
 								<Button>Project</Button>
 							</Link>
-							<Link href="/admin/projects">
-								<Button>Task</Button>
-							</Link>
-							<Link href="/admin/users">
-								<Button>Users</Button>
+							<Link href="/manager/team">
+								<Button>Manage Team </Button>
 							</Link>
 						</div>
 					</div>

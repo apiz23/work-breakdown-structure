@@ -11,18 +11,13 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { toast } from "sonner";
-import {
-	Sheet,
-	SheetContent,
-	SheetDescription,
-	SheetHeader,
-	SheetTitle,
-	SheetTrigger,
-} from "@/components/ui/sheet";
+import { useRouter } from "next/navigation";
 
 interface Project {
 	id: number;
 	name: string;
+	status: string;
+	completion: number;
 	created_at: string;
 }
 
@@ -30,6 +25,7 @@ export default function Page() {
 	const [search, setSearch] = useState<string>("");
 	const [projects, setProjects] = useState<Project[]>([]);
 	const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
+	const router = useRouter();
 
 	useEffect(() => {
 		const fetchProjects = async () => {
@@ -53,6 +49,10 @@ export default function Page() {
 			);
 			setFilteredProjects(filtered);
 		}
+	};
+
+	const handleViewProject = (projectId: string) => {
+		router.push(`/user/projects/${projectId}`);
 	};
 
 	return (
@@ -79,32 +79,24 @@ export default function Page() {
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 						{filteredProjects.map((project) => (
 							<>
-								<Sheet>
-									<Card key={project.id}>
-										<CardHeader>
-											<CardTitle className="font-semibold">{project.name}</CardTitle>
-											<CardDescription className="font-medium justify-end flex">
-												{new Date(project.created_at).toLocaleString()}
-											</CardDescription>
-										</CardHeader>
-										<CardContent>
-											<div className="flex justify-end">
-												<SheetTrigger>
-													<Button variant="default">Open</Button>
-												</SheetTrigger>
-											</div>
-										</CardContent>
-									</Card>
-									<SheetContent className="w-2/5 sm:max-w-full">
-										<SheetHeader>
-											<SheetTitle>Are you absolutely sure?</SheetTitle>
-											<SheetDescription>
-												This action cannot be undone. This will permanently delete your
-												account and remove your data from our servers.
-											</SheetDescription>
-										</SheetHeader>
-									</SheetContent>
-								</Sheet>
+								<Card key={project.id}>
+									<CardHeader>
+										<CardTitle className="font-semibold">{project.name}</CardTitle>
+										<CardDescription className="font-medium justify-end flex">
+											{project.completion} {project.status}
+										</CardDescription>
+									</CardHeader>
+									<CardContent>
+										<div className="flex justify-end">
+											<Button
+												variant="default"
+												onClick={() => handleViewProject(project.id.toString())}
+											>
+												View
+											</Button>
+										</div>
+									</CardContent>
+								</Card>
 							</>
 						))}
 					</div>
