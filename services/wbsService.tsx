@@ -26,6 +26,7 @@ export const validateLogin = async (
 	username: string,
 	password: string
 ): Promise<{
+	id?: string;
 	valid: boolean;
 	userName?: string;
 	role?: string;
@@ -39,7 +40,7 @@ export const validateLogin = async (
 
 		if (validUser) {
 			sessionStorage.setItem("login", "authorized");
-			sessionStorage.setItem("userName", validUser.username);
+			sessionStorage.setItem("userId", String(validUser.id));
 			return { valid: true, userName: validUser.username, role: validUser.role };
 		} else {
 			return { valid: false, message: "Invalid username or password." };

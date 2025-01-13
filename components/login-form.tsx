@@ -19,11 +19,15 @@ export default function LoginForm() {
 			(async () => {
 				const result = await validateLogin(username, password);
 				if (result.valid) {
+					sessionStorage.setItem("logged-in", "true");
 					if (result.role === "admin") {
+						sessionStorage.setItem("role", "admin");
 						router.push("/admin");
 					} else if (result.role === "manager") {
+						sessionStorage.setItem("role", "manager");
 						router.push("/manager");
 					} else {
+						sessionStorage.setItem("role", "user");
 						router.push("/user");
 					}
 					return { status: "success", userName: result.userName };
@@ -58,7 +62,7 @@ export default function LoginForm() {
 				onChange={(e) => setPassword(e.target.value)}
 				required
 			/>
-			<Button type="submit" variant="outline" className="w-full">
+			<Button type="submit" variant="outline" className="w-full text-white">
 				Login
 			</Button>
 		</form>

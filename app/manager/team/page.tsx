@@ -32,6 +32,8 @@ import { Switch } from "@/components/ui/switch";
 import supabase from "@/lib/supabase";
 import { fetchProject } from "@/services/project";
 import { fetchUsers } from "@/services/user";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
 	const [search, setSearch] = useState<string>("");
@@ -40,7 +42,8 @@ export default function Page() {
 	const [projects, setProjects] = useState<Project[]>([]);
 	const [assignedUsers, setAssignedUsers] = useState<User[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
-
+	const router = useRouter();
+	
 	useEffect(() => {
 		const loaddUsers = async () => {
 			setLoading(true);
@@ -142,9 +145,7 @@ export default function Page() {
 						user.id === userId ? { ...user, project_assign: updatedProjects } : user
 					)
 				);
-				toast.success(
-					`Successfully assigned project ${projectId} to user ${userId}`
-				);
+				toast.success(`Successfully assigned project`);
 			}
 		} catch (error) {
 			toast.error("An unexpected error occurred.");
@@ -181,9 +182,7 @@ export default function Page() {
 						user.id === userId ? { ...user, project_assign: updatedProjects } : user
 					)
 				);
-				toast.success(
-					`Successfully unassigned project ${projectId} from user ${userId}`
-				);
+				toast.success(`Successfully unassigned project`);
 			}
 		} catch (error) {
 			toast.error("An unexpected error occurred.");
@@ -191,90 +190,94 @@ export default function Page() {
 	};
 
 	return (
-		<div className="max-w-4xl mx-auto p-4">
-			<h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-5 text-center">
-				Work Breakdown Structure - Projects and Users
-			</h1>
+		<>
+			<ArrowLeft className="w-8 h-8" onClick={() => router.back()} />
 
-			<div className="flex justify-between mb-4 mt-10 gap-5">
-				<Input
-					type="text"
-					placeholder="Search Projects..."
-					className="border-2 w-full"
-					value={search}
-					onChange={(e) => setSearch(e.target.value)}
-				/>
-				<Button className="font-bold py-2 px-4 rounded" onClick={handleSearch}>
-					Search
-				</Button>
-			</div>
+			<div className="max-w-4xl mx-auto p-4">
+				<h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-5 text-center">
+					Work Breakdown Structure - Projects and Users
+				</h1>
 
-			<div className="mt-10">
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-					{filteredProjects.map((project) => (
-						<Card key={project.id}>
-							<CardHeader>
-								<CardTitle className="font-semibold">{project.name}</CardTitle>
-								<CardDescription>{project.desc}</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<Dialog>
-									<DialogTrigger>
-										<Button
-											variant="default"
-											className="mt-4"
-											onClick={() => {
-												handleViewAccess(project.id);
-											}}
-										>
-											View Access
-										</Button>
-									</DialogTrigger>
-									<DialogContent>
-										<DialogHeader>
-											<DialogTitle>Users Assigned to {project.name}</DialogTitle>
-										</DialogHeader>
-										<Table>
-											<TableCaption>Assigned Users</TableCaption>
-											<TableHeader>
-												<TableRow>
-													<TableHead>User Name</TableHead>
-													<TableHead className="text-center">Action</TableHead>
-												</TableRow>
-											</TableHeader>
-											<TableBody>
-												{assignedUsers.length > 0 ? (
-													assignedUsers.map((user) => (
-														<TableRow key={user.id}>
-															<TableCell>{user.name}</TableCell>
-															<TableCell className="text-center">
-																<Switch
-																	checked={checkChecked(project.id, user)}
-																	onCheckedChange={async (isChecked) => {
-																		if (isChecked) {
-																			await assignProjectToUser(user.id, project.id);
-																		} else {
-																			await unassignProjectFromUser(user.id, project.id);
-																		}
-																	}}
-																/>
-															</TableCell>
-														</TableRow>
-													))
-												) : (
+				<div className="flex justify-between mb-4 mt-10 gap-5">
+					<Input
+						type="text"
+						placeholder="Search Projects..."
+						className="border-2 w-full"
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+					/>
+					<Button className="font-bold py-2 px-4 rounded" onClick={handleSearch}>
+						Search
+					</Button>
+				</div>
+
+				<div className="mt-10">
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+						{filteredProjects.map((project) => (
+							<Card key={project.id}>
+								<CardHeader>
+									<CardTitle className="font-semibold">{project.name}</CardTitle>
+									<CardDescription>{project.desc}</CardDescription>
+								</CardHeader>
+								<CardContent>
+									<Dialog>
+										<DialogTrigger>
+											<Button
+												variant="default"
+												className="mt-4"
+												onClick={() => {
+													handleViewAccess(project.id);
+												}}
+											>
+												View Access
+											</Button>
+										</DialogTrigger>
+										<DialogContent>
+											<DialogHeader>
+												<DialogTitle>Users Assigned to {project.name}</DialogTitle>
+											</DialogHeader>
+											<Table>
+												<TableCaption>Assigned Users</TableCaption>
+												<TableHeader>
 													<TableRow>
-														<TableCell>No users assigned</TableCell>
+														<TableHead>User Name</TableHead>
+														<TableHead className="text-center">Action</TableHead>
 													</TableRow>
-												)}
-											</TableBody>
-										</Table>
-									</DialogContent>
-								</Dialog>
-							</CardContent>
-						</Card>
-					))}
+												</TableHeader>
+												<TableBody>
+													{assignedUsers.length > 0 ? (
+														assignedUsers.map((user) => (
+															<TableRow key={user.id}>
+																<TableCell>{user.name}</TableCell>
+																<TableCell className="text-center">
+																	<Switch
+																		checked={checkChecked(project.id, user)}
+																		onCheckedChange={async (isChecked) => {
+																			if (isChecked) {
+																				await assignProjectToUser(user.id, project.id);
+																			} else {
+																				await unassignProjectFromUser(user.id, project.id);
+																			}
+																		}}
+																	/>
+																</TableCell>
+															</TableRow>
+														))
+													) : (
+														<TableRow>
+															<TableCell>No users assigned</TableCell>
+														</TableRow>
+													)}
+												</TableBody>
+											</Table>
+										</DialogContent>
+									</Dialog>
+								</CardContent>
+							</Card>
+						))}
+					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }
