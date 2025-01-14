@@ -24,6 +24,7 @@ import { Label } from "@/components/ui/label";
 import { addProject } from "@/services/project";
 import { ArrowLeft } from "lucide-react";
 import { fetchUserById } from "@/services/user";
+import { insertLog } from "@/services/log";
 
 export default function Page() {
 	const [search, setSearch] = useState<string>("");
@@ -104,12 +105,30 @@ export default function Page() {
 			await addProject(newProject);
 
 			toast.success("Project added successfully.");
+
+			await insertLog(
+				null,
+				`Added project: ${projectName}`,
+				undefined,
+				"project",
+				"success",
+				`Project details: Name: ${projectName}, Desc: ${projectDesc}, Start Date: ${startDate}, End Date: ${endDate}`
+			);
+
 			setProjectName("");
 			setProjectDesc("");
 			setStartDate("");
 			setEndDate("");
-		} catch {
+		} catch (error: any) {
 			toast.error("Failed to add project.");
+			await insertLog(
+				null,
+				`Failed to add project: ${projectName}`,
+				undefined,
+				"project",
+				"failure",
+				`Error: ${error.message}`
+			);
 		}
 	};
 
@@ -118,7 +137,7 @@ export default function Page() {
 			<ArrowLeft className="w-8 h-8" onClick={() => router.back()} />
 			<div className="max-w-4xl mx-auto p-4">
 				<h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-5 text-center">
-					Work Breakdown Structure
+					Project List
 				</h1>
 
 				<div className="flex justify-between mb-4 mt-10 gap-5">
@@ -193,9 +212,9 @@ export default function Page() {
 							{filteredProjects.map((project) => (
 								<Card key={project.id}>
 									<CardHeader>
-										<CardTitle className="font-semibold">{project.name}</CardTitle>
-										<CardDescription className="font-medium justify-end flex">
-											{project.completion} {project.status}
+										<CardTitle className="font-semibold capitalize">{project.name}</CardTitle>
+										<CardDescription className="font-medium">
+											Total Mandays: {project.total_mandays}
 										</CardDescription>
 									</CardHeader>
 									<CardContent>

@@ -14,11 +14,12 @@ import {
 	SheetTrigger,
 } from "./ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import supabase from "@/lib/supabase";
+import { fetchUserById } from "@/services/user";
 
-export default function Navbarf({ role }: { role: string }) {
+export default function Navbar({ role }: { role: string }) {
 	const [userDetails, setUserDetails] = useState<any>(null);
 	const [loading, setLoading] = useState<boolean>(true);
+	const [userImageUrl, setUserImageUrl] = useState<string>("");
 
 	useEffect(() => {
 		const fetchUserDetails = async () => {
@@ -26,17 +27,18 @@ export default function Navbarf({ role }: { role: string }) {
 
 			if (userId) {
 				try {
-					const { data, error } = await supabase
-						.from("wbs_users")
-						.select("*")
-						.eq("id", userId)
-						.single();
+					const user = await fetchUserById(userId);
+					if (user) {
+						setUserDetails(user);
 
-					if (error) {
-						throw error;
+						const email = user.email || "";
+						const noMatrix = email.split("@")[0].toUpperCase();
+						console.log(noMatrix);
+
+						const imageUrl = `https://community.uthm.edu.my/images/students/20232024/${noMatrix}.jpg`;
+
+						setUserImageUrl(imageUrl);
 					}
-
-					setUserDetails(data);
 				} catch (error) {
 					console.error("Error fetching user details:", error);
 				} finally {
@@ -50,6 +52,10 @@ export default function Navbarf({ role }: { role: string }) {
 
 		fetchUserDetails();
 	}, []);
+
+	const handleLogout = () => {
+		sessionStorage.clear();
+	};
 
 	if (role === "staff") {
 		return (
@@ -72,8 +78,8 @@ export default function Navbarf({ role }: { role: string }) {
 						<SheetContent>
 							<SheetHeader>
 								<Avatar className="w-32 h-32 mx-auto">
-									<AvatarImage src="https://github.com/shadcn.png" />
-									<AvatarFallback>CN</AvatarFallback>
+									<AvatarImage src={userImageUrl || "https://via.placeholder.com/150"} />
+									<AvatarFallback>X</AvatarFallback>
 								</Avatar>
 								<SheetTitle>
 									{loading ? "Loading..." : userDetails?.name || "Guest"}
@@ -87,7 +93,7 @@ export default function Navbarf({ role }: { role: string }) {
 							</SheetHeader>
 						</SheetContent>
 					</Sheet>
-					<Link href="/login">
+					<Link href="/login" onClick={handleLogout}>
 						<DockIcon>
 							<LogOut />
 						</DockIcon>
@@ -117,8 +123,8 @@ export default function Navbarf({ role }: { role: string }) {
 						<SheetContent>
 							<SheetHeader>
 								<Avatar className="w-32 h-32 mx-auto">
-									<AvatarImage src="https://github.com/shadcn.png" />
-									<AvatarFallback>CN</AvatarFallback>
+									<AvatarImage src={userImageUrl || "https://via.placeholder.com/150"} />
+									<AvatarFallback>X</AvatarFallback>
 								</Avatar>
 								<SheetTitle>
 									{loading ? "Loading..." : userDetails?.name || "Guest"}
@@ -132,7 +138,7 @@ export default function Navbarf({ role }: { role: string }) {
 							</SheetHeader>
 						</SheetContent>
 					</Sheet>
-					<Link href="/login">
+					<Link href="/login" onClick={handleLogout}>
 						<DockIcon>
 							<LogOut />
 						</DockIcon>
@@ -162,8 +168,8 @@ export default function Navbarf({ role }: { role: string }) {
 						<SheetContent>
 							<SheetHeader>
 								<Avatar className="w-32 h-32 mx-auto">
-									<AvatarImage src="https://github.com/shadcn.png" />
-									<AvatarFallback>CN</AvatarFallback>
+									<AvatarImage src={userImageUrl || "https://via.placeholder.com/150"} />
+									<AvatarFallback>X</AvatarFallback>
 								</Avatar>
 								<SheetTitle>
 									{loading ? "Loading..." : userDetails?.name || "Guest"}
@@ -177,7 +183,7 @@ export default function Navbarf({ role }: { role: string }) {
 							</SheetHeader>
 						</SheetContent>
 					</Sheet>
-					<Link href="/login">
+					<Link href="/login" onClick={handleLogout}>
 						<DockIcon>
 							<LogOut />
 						</DockIcon>

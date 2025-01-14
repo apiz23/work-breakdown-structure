@@ -22,6 +22,7 @@ import {
 import { Project } from "@/lib/interface";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 
 export default function Page() {
 	const [search, setSearch] = useState<string>("");
@@ -51,7 +52,6 @@ export default function Page() {
 			toast.error("Please enter a project name to search.");
 			setFilteredProjects(projects);
 		} else {
-			toast.error("");
 			const filtered = projects.filter((project) =>
 				project.name.toLowerCase().includes(search.toLowerCase())
 			);
@@ -64,7 +64,7 @@ export default function Page() {
 			<ArrowLeft className="w-8 h-8" onClick={() => router.back()} />
 			<div className="max-w-4xl mx-auto p-4">
 				<h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-5 text-center">
-					Work Breakdown Structure
+					Project List
 				</h1>
 
 				<div className="flex justify-between mb-4 mt-10 gap-5">
@@ -88,9 +88,11 @@ export default function Page() {
 									<Dialog>
 										<Card key={project.id}>
 											<CardHeader>
-												<CardTitle className="font-semibold">{project.name}</CardTitle>
-												<CardDescription className="font-medium justify-end flex">
-													{project.completion} {project.status}
+												<CardTitle className="font-semibold capitalize">
+													{project.name}
+												</CardTitle>
+												<CardDescription className="font-medium">
+													<Badge variant="outline">{project.status}</Badge>
 												</CardDescription>
 											</CardHeader>
 											<CardContent>

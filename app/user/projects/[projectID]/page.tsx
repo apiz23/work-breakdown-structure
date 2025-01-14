@@ -26,6 +26,7 @@ import { Task } from "@/lib/interface";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { fetchUserById, fetchUsers } from "@/services/user";
+import { insertLog } from "@/services/log";
 
 export default function ProjectDetails({
 	params,
@@ -116,10 +117,30 @@ export default function ProjectDetails({
 				throw new Error(updateProjectError.message);
 			}
 
+			const userId = sessionStorage.getItem("userId");
 			toast.success("Task updated successfully!");
+
+			await insertLog(
+				userId,
+				`Updated task with ID: ${taskId}`,
+				taskId,
+				"task",
+				"success",
+				`Duration updated to ${newDuration}, Mandays updated to ${newMandays}`
+			);
 			fetchTasks();
-		} catch (error) {
+		} catch (error: any) {
 			toast.error("An error occurred while updating the task.");
+			const userId = sessionStorage.getItem("userId");
+
+			await insertLog(
+				userId,
+				`Failed to update task with ID: ${taskId}`,
+				taskId,
+				"task",
+				"failure",
+				`Failed with message: ${error.message}`
+			);
 		}
 	};
 
@@ -143,13 +164,13 @@ export default function ProjectDetails({
 		<>
 			<ArrowLeft className="w-8 h-8" onClick={() => router.back()} />
 			<div className="max-w-6xl mx-auto p-4 ">
-				<h1 className="text-2xl font-bold mb-4">Project Details</h1>
+				<h1 className="text-4xl font-bold mb-4">Project Details - Tasks</h1>
 
 				{tasks.length > 0 ? (
-					<div>
-						{tasks.map((task) => (
-							<Dialog key={task.id}>
-								<div className="grid md:grid-cols-2 grid-cols-1 gap-4">
+					<>
+						<div className="grid md:grid-cols-2 grid-cols-1 gap-4">
+							{tasks.map((task) => (
+								<Dialog key={task.id}>
 									<Card>
 										<CardHeader>
 											<CardTitle>{task.name}</CardTitle>
@@ -164,73 +185,72 @@ export default function ProjectDetails({
 											</div>
 										</CardContent>
 									</Card>
-								</div>
-								<DialogContent className="max-w-xl min-w-sm">
-									<DialogHeader>
-										<DialogTitle>Task Details</DialogTitle>
-										<DialogDescription>
-											Here are the details for the selected task.
-										</DialogDescription>
-									</DialogHeader>
-									<div className="flow-root text-white">
-										<dl className="-my-3 divide-y divide-gray-100 text-sm">
-											{[
-												{ label: "Id", value: task.id },
-												{ label: "Name", value: task.name },
-												{ label: "Description", value: task.desc },
-												{ label: "Duration (Hours)", value: task.duration },
-												{ label: "Mandays", value: task.mandays },
-												{ label: "Status", value: task.status },
-												{
-													label: "Priority",
-													value: <Badge variant="default">{task.priority}</Badge>,
-												},
-											].map((item, index) => (
-												<div
-													key={index}
-													className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4"
-												>
-													<dt className="font-medium capitalize">{item.label}</dt>
-													<dd className="sm:col-span-2">{item.value}</dd>
-												</div>
-											))}
-										</dl>
-									</div>
-									<div className="text-white">
-										<h2 className="text-lg font-bold">Update Task</h2>
-										<form onSubmit={(e) => handleSubmit(e, task.id)}>
+									<DialogContent className="max-w-xl min-w-sm">
+										<DialogHeader>
+											<DialogTitle>Task Details</DialogTitle>
+											<DialogDescription>
+												Here are the details for the selected task.
+											</DialogDescription>
+										</DialogHeader>
+										<div className="flow-root text-white">
 											<dl className="-my-3 divide-y divide-gray-100 text-sm">
-												<div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-													<dt className="font-medium capitalize">
-														<Label className="font-medium">Enter the day:</Label>
-													</dt>
-													<dd className="sm:col-span-2">
-														<Input
-															type="number"
-															min="1"
-															className="sm:col-span-2 border rounded p-2 bg-neutral-700"
-															placeholder="Enter days"
-															value={inputValue}
-															onChange={(e) => setInputValue(Number(e.target.value))}
-														/>
-													</dd>
-												</div>
+												{[
+													{ label: "Id", value: task.id },
+													{ label: "Name", value: task.name },
+													{ label: "Description", value: task.desc },
+													{ label: "Duration (Hours)", value: task.duration },
+													{ label: "Mandays", value: task.mandays },
+													{
+														label: "Priority",
+														value: <Badge variant="default">{task.priority}</Badge>,
+													},
+												].map((item, index) => (
+													<div
+														key={index}
+														className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4"
+													>
+														<dt className="font-medium capitalize">{item.label}</dt>
+														<dd className="sm:col-span-2">{item.value}</dd>
+													</div>
+												))}
 											</dl>
-											<div className="flex justify-center">
-												<Button
-													type="submit"
-													variant="outline"
-													className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-												>
-													Submit Update
-												</Button>
-											</div>
-										</form>
-									</div>
-								</DialogContent>
-							</Dialog>
-						))}
-					</div>
+										</div>
+										<div className="text-white">
+											<h2 className="text-lg font-bold">Update Task</h2>
+											<form onSubmit={(e) => handleSubmit(e, task.id)}>
+												<dl className="-my-3 divide-y divide-gray-100 text-sm">
+													<div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+														<dt className="font-medium capitalize">
+															<Label className="font-medium">Enter the day:</Label>
+														</dt>
+														<dd className="sm:col-span-2">
+															<Input
+																type="number"
+																min="1"
+																className="sm:col-span-2 border rounded p-2 bg-neutral-700"
+																placeholder="Enter days"
+																value={inputValue}
+																onChange={(e) => setInputValue(Number(e.target.value))}
+															/>
+														</dd>
+													</div>
+												</dl>
+												<div className="flex justify-center">
+													<Button
+														type="submit"
+														variant="outline"
+														className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+													>
+														Submit Update
+													</Button>
+												</div>
+											</form>
+										</div>
+									</DialogContent>
+								</Dialog>
+							))}
+						</div>
+					</>
 				) : (
 					<p className="text-gray-500">No tasks available for this project.</p>
 				)}

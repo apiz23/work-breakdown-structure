@@ -85,7 +85,7 @@ export default function Page() {
 			<ArrowLeft className="w-8 h-8" onClick={() => router.back()} />
 			<div className="max-w-4xl mx-auto p-4">
 				<h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-5 text-center">
-					Work Breakdown Structure
+					Project List
 				</h1>
 
 				<div className="flex justify-between mb-4 mt-10 gap-5">

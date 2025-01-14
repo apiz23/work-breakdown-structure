@@ -29,6 +29,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { insertLog } from "@/services/log";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Page() {
 	const [search, setSearch] = useState<string>("");
@@ -74,13 +76,24 @@ export default function Page() {
 
 	const updateUserRole = async (userId: string, newRole: string) => {
 		try {
-			const { data, error } = await supabase
+			const { error } = await supabase
 				.from("wbs_users")
 				.update({ role: newRole })
 				.eq("id", userId)
 				.select();
 
-			if (error) throw error;
+			if (error) {
+				toast.error(`Failed to update role: ${error.message}`);
+				await insertLog(
+					userId,
+					`Failed to update user role to ${newRole}`,
+					undefined,
+					"user_role",
+					"failure",
+					`Error: ${error.message}`
+				);
+				return;
+			}
 
 			setUsers((prevUsers) =>
 				prevUsers.map((user) =>
@@ -93,17 +106,33 @@ export default function Page() {
 				)
 			);
 			toast.success("Role updated successfully!");
-		} catch (err) {
-			toast.error("Failed to update role. Please try again.");
+			await insertLog(
+				userId,
+				`Successfully updated user role to ${newRole}`,
+				undefined,
+				"user_role",
+				"success",
+				`User role updated to ${newRole} for User ID ${userId}`
+			);
+		} catch (err: any) {
+			toast.error("An unexpected error occurred while updating the role.");
+			await insertLog(
+				userId,
+				`Unexpected error while updating role to ${newRole}`,
+				undefined,
+				"user_role",
+				"failure",
+				`Error: ${err.message}`
+			);
 		}
 	};
 
 	return (
-		<div className="min-h-screen">
+		<>
 			<ArrowLeft className="w-8 h-8" onClick={() => router.back()} />
 			<div className="max-w-4xl mx-auto p-4">
 				<h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-5 text-center">
-					Work Breakdown Structure - Users
+					User List
 				</h1>
 
 				<div className="flex justify-between mb-4 mt-10 gap-5">
@@ -121,67 +150,64 @@ export default function Page() {
 
 				<div className="mt-10">
 					{filteredUsers.length > 0 ? (
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-							{filteredUsers.map((user) => (
-								<Card key={user.id}>
-									<CardHeader>
-										<CardTitle className="font-semibold">
-											{user.name || "No Name"}
-										</CardTitle>
-										<CardDescription className="flex justify-between">
-											<span>Username: {user.username || "N/A"}</span>
-											<span>Role: {user.role || "Staff"}</span>
-										</CardDescription>
-									</CardHeader>
-									<Dialog>
-										<CardContent>
-											<DialogTrigger>
-												<div className="flex justify-end mt-4">
-													<Button variant="default">View</Button>
+						<ScrollArea className="w-full h-[50vh] rounded-md p-2">
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								{filteredUsers.map((user) => (
+									<Card key={user.id}>
+										<CardHeader>
+											<CardTitle className="font-semibold">
+												{user.name || "No Name"}
+											</CardTitle>
+											<CardDescription className="flex justify-between">
+												<span>Username: {user.username || "N/A"}</span>
+												<span>Role: {user.role || "Staff"}</span>
+											</CardDescription>
+										</CardHeader>
+										<Dialog>
+											<CardContent>
+												<DialogTrigger>
+													<div className="flex justify-end mt-4">
+														<Button variant="default">View</Button>
+													</div>
+												</DialogTrigger>
+											</CardContent>
+											<DialogContent>
+												<DialogHeader>
+													<DialogTitle>Detail: {user.name || "No Name"}</DialogTitle>
+												</DialogHeader>
+												<div className="text-md text-gray-400">
+													<p>Id: {user.id || "No Id"}</p>
+													<p>Username: {user.email || "No Username"}</p>
+													<p>Email: {user.email || "No Email"}</p>
+													<p>Role: {user.role || "No Role"}</p>
+													<p>Created At: {new Date(user.created_at).toLocaleString()}</p>
 												</div>
-											</DialogTrigger>
-										</CardContent>
-										<DialogContent>
-											<DialogHeader>
-												<DialogTitle>Detail: {user.name || "No Name"}</DialogTitle>
-											</DialogHeader>
-											<div className="text-md text-gray-400">
-												<p>Id: {user.id || "No Id"}</p>
-												<p>Username: {user.email || "No Username"}</p>
-												<p>Email: {user.email || "No Email"}</p>
-												<p>Role: {user.role || "No Role"}</p>
-												<p>Created At: {new Date(user.created_at).toLocaleString()}</p>
-											</div>
-											<div className="mt-4">
-												<Select
-													value={user.role || ""}
-													onValueChange={(newRole) => updateUserRole(user.id, newRole)}
-												>
-													<SelectTrigger className="border border-gray-300 rounded px-3 py-2">
-														<SelectValue placeholder="Role" />
-													</SelectTrigger>
-													<SelectContent>
-														<SelectItem value="staff">Staff</SelectItem>
-														<SelectItem value="manager">Manager</SelectItem>
-														<SelectItem value="admin">Admin</SelectItem>
-													</SelectContent>
-												</Select>
-											</div>
-											<div className="flex justify-end mt-4">
-												<Button variant="destructive">
-													<Trash />
-												</Button>
-											</div>
-										</DialogContent>
-									</Dialog>
-								</Card>
-							))}
-						</div>
+												<div className="mt-4">
+													<Select
+														value={user.role || ""}
+														onValueChange={(newRole) => updateUserRole(user.id, newRole)}
+													>
+														<SelectTrigger className="border border-gray-300 rounded px-3 py-2">
+															<SelectValue placeholder="Role" />
+														</SelectTrigger>
+														<SelectContent>
+															<SelectItem value="staff">Staff</SelectItem>
+															<SelectItem value="manager">Manager</SelectItem>
+															<SelectItem value="admin">Admin</SelectItem>
+														</SelectContent>
+													</Select>
+												</div>
+											</DialogContent>
+										</Dialog>
+									</Card>
+								))}
+							</div>
+						</ScrollArea>
 					) : (
 						<p className="text-gray-500">No users found.</p>
 					)}
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }

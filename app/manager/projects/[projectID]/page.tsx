@@ -33,6 +33,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { insertLog } from "@/services/log";
 
 export default function ProjectDetails({
 	params,
@@ -139,9 +140,31 @@ export default function ProjectDetails({
 			}
 
 			toast.success("Task updated successfully!");
+
+			const userId = sessionStorage.getItem("userId");
+
+			await insertLog(
+				userId,
+				`Updated task with ID: ${taskId}`,
+				taskId,
+				"task",
+				"success",
+				`Duration updated to ${newDuration}, Mandays updated to ${newMandays}`
+			);
+
 			fetchTasks();
-		} catch (error) {
+		} catch (error: any) {
 			toast.error("An error occurred while updating the task.");
+			const userId = sessionStorage.getItem("userId");
+
+			await insertLog(
+				userId,
+				`Failed to update task with ID: ${taskId}`,
+				taskId,
+				"task",
+				"failure",
+				`Failed with message: ${error.message}`
+			);
 		}
 	};
 
@@ -174,17 +197,33 @@ export default function ProjectDetails({
 				.eq("id", userId);
 
 			if (updateError) {
-				toast.error(`Failed to assign project: ${updateError.message}`);
+				toast.error(`Failed to assign task: ${updateError.message}`);
 			} else {
 				setAssignedUsers((prevUsers) =>
 					prevUsers.map((user) =>
 						user.id === userId ? { ...user, tasks_assign: updatedProjects } : user
 					)
 				);
-				toast.success(`Successfully assigned project`);
+				toast.success(`Successfully assigned task`);
+				await insertLog(
+					userId,
+					`Assigned task ID: ${projectId}`,
+					projectId,
+					"task",
+					"success",
+					`User ID ${userId} assigned to task ${projectId}`
+				);
 			}
-		} catch (error) {
+		} catch (error: any) {
 			toast.error("An unexpected error occurred.");
+			await insertLog(
+				userId,
+				`Unexpected error while assigning task ID: ${projectId}`,
+				projectId,
+				"task",
+				"failure",
+				`Error: ${error.message}`
+			);
 		}
 	};
 
@@ -211,17 +250,33 @@ export default function ProjectDetails({
 				.eq("id", userId);
 
 			if (updateError) {
-				toast.error(`Failed to unassign project: ${updateError.message}`);
+				toast.error(`Failed to unassign task: ${updateError.message}`);
 			} else {
 				setAssignedUsers((prevUsers) =>
 					prevUsers.map((user) =>
 						user.id === userId ? { ...user, tasks_assign: updatedProjects } : user
 					)
 				);
-				toast.success(`Successfully unassigned project`);
+				toast.success(`Successfully unassigned task`);
+				await insertLog(
+					userId,
+					`Assigned task ID: ${projectId}`,
+					projectId,
+					"task",
+					"success",
+					`User ID ${userId} assigned to task ${projectId}`
+				);
 			}
-		} catch (error) {
+		} catch (error: any) {
 			toast.error("An unexpected error occurred.");
+			await insertLog(
+				userId,
+				`Unexpected error while assigning task ID: ${projectId}`,
+				projectId,
+				"task",
+				"failure",
+				`Error: ${error.message}`
+			);
 		}
 	};
 
@@ -266,18 +321,15 @@ export default function ProjectDetails({
 			<ArrowLeft className="w-8 h-8 mb-6" onClick={() => router.back()} />
 			<div className="max-w-6xl mx-auto p-4 b">
 				<div className="flex justify-between">
-					<h1 className="text-2xl font-bold mb-4">Project Details</h1>
+					<h1 className="text-4xl font-bold mb-4">Project Details - Tasks</h1>
 					<Dialog>
 						<DialogTrigger className="capitalize">
 							<Button variant="default">add new task</Button>
 						</DialogTrigger>
 						<DialogContent>
 							<DialogHeader>
-								<DialogTitle>Are you absolutely sure?</DialogTitle>
-								<DialogDescription>
-									This action cannot be undone. This will permanently delete your account
-									and remove your data from our servers.
-								</DialogDescription>
+								<DialogTitle className="capitalize text-2xl">New Task</DialogTitle>
+								<DialogDescription>Fill in the blanks</DialogDescription>
 							</DialogHeader>
 							<form onSubmit={handleNewTasks}>
 								<div className="flow-root text-white">
@@ -332,11 +384,11 @@ export default function ProjectDetails({
 				</div>
 				{tasks.length > 0 ? (
 					<>
-						{tasks.map((task) => (
-							<div key={task.id} className="grid md:grid-cols-2 grid-cols-1 gap-4">
-								<Card>
-									<CardHeader>
-										<CardTitle>{task.name}</CardTitle>
+						<div className="grid md:grid-cols-2 grid-cols-1 gap-4 py-2">
+							{tasks.map((task) => (
+								<Card key={task.id}>
+									<CardHeader className="font-medium">
+										<CardTitle className="capitalize">{task.name}</CardTitle>
 										<CardDescription>{task.desc}</CardDescription>
 										<Badge variant="default" className="w-fit">
 											{task.priority}
@@ -362,7 +414,6 @@ export default function ProjectDetails({
 															{ label: "Description", value: task.desc },
 															{ label: "Duration (Hours)", value: task.duration },
 															{ label: "Mandays", value: task.mandays },
-															{ label: "Status", value: task.status },
 															{
 																label: "Priority",
 																value: <Badge variant="default">{task.priority}</Badge>,
@@ -378,7 +429,7 @@ export default function ProjectDetails({
 														))}
 													</dl>
 												</div>
-												<dl className="-my-3 divide-y divide-gray-100 text-sm">
+												<dl className="-my-3 divide-y divide-gray-100 text-sm mb-5">
 													<form onSubmit={(e) => handleSubmit(e, task.id)}>
 														<div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
 															<dt className="font-medium capitalize">
@@ -474,8 +525,8 @@ export default function ProjectDetails({
 										</Dialog>
 									</CardContent>
 								</Card>
-							</div>
-						))}
+							))}
+						</div>
 					</>
 				) : (
 					<p className="text-gray-500">No tasks available for this project.</p>

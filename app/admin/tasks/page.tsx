@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/select";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 
 export default function Page() {
 	const [search, setSearch] = useState<string>("");
@@ -101,11 +102,11 @@ export default function Page() {
 	};
 
 	return (
-		<div className="min-h-screen">
+		<>
 			<ArrowLeft className="w-8 h-8" onClick={() => router.back()} />
 			<div className="max-w-4xl mx-auto p-4">
 				<h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-5 text-center">
-					Work Breakdown Structure
+					Tasks List
 				</h1>
 
 				<div className="flex justify-between mb-4 mt-10 gap-5">
@@ -144,9 +145,11 @@ export default function Page() {
 								<Dialog key={task.id}>
 									<Card>
 										<CardHeader>
-											<CardTitle className="font-semibold">{task.name}</CardTitle>
-											<CardDescription className="font-medium justify-end flex">
-												{task.status}
+											<CardTitle className="font-semibold capitalize">
+												{task.name}
+											</CardTitle>
+											<CardDescription className="font-medium">
+												<Badge variant="outline">{task.priority}</Badge>
 											</CardDescription>
 										</CardHeader>
 										<CardContent>
@@ -166,9 +169,9 @@ export default function Page() {
 											<dl className="-my-3 divide-y divide-gray-100 text-sm">
 												{[
 													{ label: "Id", value: task.id },
-													{ label: "Status", value: task.status },
-													{ label: "Mandays", value: task.mandays },
+													{ label: "Project Id", value: task.project_id },
 													{ label: "Duration (Days)", value: task.duration },
+													{ label: "Mandays", value: task.mandays },
 													{ label: "Priority (Days)", value: task.priority },
 												].map((item, index) => (
 													<div
@@ -190,6 +193,6 @@ export default function Page() {
 					)}
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }

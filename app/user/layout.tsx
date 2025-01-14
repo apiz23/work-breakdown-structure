@@ -25,7 +25,7 @@ export default function UserLayout({
 
 				<AuthProvider>
 					<div className="min-h-screen">
-						<div className="px-4 py-10">{children}</div>
+						<div className="p-4">{children}</div>
 					</div>
 				</AuthProvider>
 			</body>

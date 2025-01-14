@@ -34,6 +34,7 @@ import { fetchProject } from "@/services/project";
 import { fetchUsers } from "@/services/user";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { insertLog } from "@/services/log";
 
 export default function Page() {
 	const [search, setSearch] = useState<string>("");
@@ -43,7 +44,7 @@ export default function Page() {
 	const [assignedUsers, setAssignedUsers] = useState<User[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const router = useRouter();
-	
+
 	useEffect(() => {
 		const loaddUsers = async () => {
 			setLoading(true);
@@ -146,9 +147,25 @@ export default function Page() {
 					)
 				);
 				toast.success(`Successfully assigned project`);
+				await insertLog(
+					userId,
+					`Assigned project ID: ${projectId}`,
+					projectId,
+					"project",
+					"success",
+					`User ID ${userId} assigned to project ${projectId}`
+				);
 			}
-		} catch (error) {
+		} catch (error: any) {
 			toast.error("An unexpected error occurred.");
+			await insertLog(
+				userId,
+				`Unexpected error while assigning project ID: ${projectId}`,
+				projectId,
+				"project",
+				"failure",
+				`Error: ${error.message}`
+			);
 		}
 	};
 
@@ -183,9 +200,25 @@ export default function Page() {
 					)
 				);
 				toast.success(`Successfully unassigned project`);
+				await insertLog(
+					userId,
+					`Unassigned project ID: ${projectId}`,
+					projectId,
+					"project",
+					"success",
+					`User ID ${userId} unassigned from project ${projectId}`
+				);
 			}
-		} catch (error) {
+		} catch (error: any) {
 			toast.error("An unexpected error occurred.");
+			await insertLog(
+				userId,
+				`Unexpected error while unassigning project ID: ${projectId}`,
+				projectId,
+				"project",
+				"failure",
+				`Error: ${error.message}`
+			);
 		}
 	};
 
@@ -195,7 +228,7 @@ export default function Page() {
 
 			<div className="max-w-4xl mx-auto p-4">
 				<h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-5 text-center">
-					Work Breakdown Structure - Projects and Users
+					Manage Team Access
 				</h1>
 
 				<div className="flex justify-between mb-4 mt-10 gap-5">

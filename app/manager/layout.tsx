@@ -23,7 +23,7 @@ export default function ManagerLayout({
 				</div>
 				<Toaster richColors />
 				<AuthProvider>
-					<div className="px-4 py-10">{children}</div>
+					<div className="p-4">{children}</div>
 				</AuthProvider>
 			</body>
 		</html>

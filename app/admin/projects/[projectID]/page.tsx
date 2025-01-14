@@ -113,7 +113,7 @@ export default function ProjectDetails({
 		<div className="min-h-screen pt-20">
 			<ArrowLeft className="w-8 h-8" onClick={() => router.back()} />
 			<div className="max-w-6xl mx-auto p-4 ">
-				<h1 className="text-2xl font-bold mb-4">Project Details</h1>
+				<h1 className="text-4xl font-bold mb-4">Project Details - Tasks</h1>
 
 				{tasks.length > 0 ? (
 					<div>
@@ -164,11 +164,6 @@ export default function ProjectDetails({
 														<div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
 															<dt className="font-medium">Mandays</dt>
 															<dd className="sm:col-span-2">{task.mandays}</dd>
-														</div>
-
-														<div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-															<dt className="font-medium">Status</dt>
-															<dd className="sm:col-span-2">{task.status}</dd>
 														</div>
 
 														<div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">

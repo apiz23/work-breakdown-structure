@@ -3,7 +3,6 @@ export interface Task {
 	name: string;
 	desc: string;
 	project_id: string;
-	status: string;
 	duration: number;
 	mandays: number;
 	priority: string;
@@ -30,4 +29,15 @@ export interface User {
 	created_at: string;
 	tasks_assign: string[];
 	project_assign: string[];
+}
+
+export interface Log {
+	id: number; 
+	user_id?: string | null;
+	action?: string | null; 
+	details?: string | null; 
+	status?: string | null;
+	item_id?: string | null; 
+	item_type?: string | null; 
+	created_at: string;
 }
