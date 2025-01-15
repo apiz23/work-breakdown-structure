@@ -47,10 +47,10 @@ export default function Page() {
 	return (
 		<div className="max-w-4xl mx-auto p-4 pt-20">
 			<div className="mx-auto max-w-3xl text-center">
-				<h1 className="bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text text-3xl font-extrabold text-transparent sm:text-5xl">
+				<h1 className="bg-gradient-to-r from-red-300 via-yellow-500 to-red-600 bg-clip-text text-3xl font-extrabold text-transparent sm:text-5xl">
 					Work Breakdown Structure
 				</h1>
-				<h2 className="bg-gradient-to-r from-purple-300 via-blue-500 to-green-600 bg-clip-text text-xl font-extrabold text-transparent sm:text-3xl">
+				<h2 className="bg-gradient-to-r from-red-300 via-yellow-500 to-red-600 bg-clip-text text-xl font-extrabold text-transparent sm:text-3xl">
 					Admin
 				</h2>
 
@@ -72,7 +72,7 @@ export default function Page() {
 				</div>
 			</div>
 
-			<div className="my-10 py-2 bg-neutral-900">
+			<div className="my-10 py-2">
 				{loading ? (
 					<p>Loading logs...</p>
 				) : logs.length > 0 ? (

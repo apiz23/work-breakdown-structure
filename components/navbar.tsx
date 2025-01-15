@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ModeToggle } from "./mode-toggle";
 import { Dock, DockIcon } from "./ui/dock";
 import { Home, LogOut, User } from "lucide-react";
 import Link from "next/link";
@@ -61,9 +60,6 @@ export default function Navbar({ role }: { role: string }) {
 		return (
 			<div className="relative">
 				<Dock direction="middle">
-					<DockIcon>
-						<ModeToggle />
-					</DockIcon>
 					<Link href="/user">
 						<DockIcon>
 							<Home />
@@ -105,9 +101,6 @@ export default function Navbar({ role }: { role: string }) {
 		return (
 			<div className="relative">
 				<Dock direction="middle">
-					<DockIcon>
-						<ModeToggle />
-					</DockIcon>
 					<Link href="/manager">
 						<DockIcon>
 							<Home />
@@ -150,9 +143,6 @@ export default function Navbar({ role }: { role: string }) {
 		return (
 			<div className="relative">
 				<Dock direction="middle">
-					<DockIcon>
-						<ModeToggle />
-					</DockIcon>
 					<Link href="/admin">
 						<DockIcon>
 							<Home />
