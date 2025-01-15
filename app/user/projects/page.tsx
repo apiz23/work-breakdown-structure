@@ -23,6 +23,7 @@ import {
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Project } from "@/lib/interface";
+import { Badge } from "@/components/ui/badge";
 
 export default function Page() {
 	const [search, setSearch] = useState<string>("");
@@ -122,8 +123,8 @@ export default function Page() {
 									<Card key={project.id}>
 										<CardHeader>
 											<CardTitle className="font-semibold">{project.name}</CardTitle>
-											<CardDescription className="font-medium justify-end flex">
-												{project.completion} {project.status}
+											<CardDescription className="font-medium">
+												<Badge variant="outline">{project.status}</Badge>
 											</CardDescription>
 										</CardHeader>
 										<CardContent>
